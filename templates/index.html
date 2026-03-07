@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Query Generator - Custom Schema</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <span class="icon">🤖</span>
+                    SQL Query Generator
+                </h1>
+                <p class="hero-subtitle">Provide your database schema, then get SQL queries from natural language</p>
+                <div class="hero-badges">
+                    <span class="badge">Custom Schema</span>
+                    <span class="badge">Groq Powered</span>
+                    <span class="badge">Real-time</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Step 1: Schema Input -->
+        <section class="card card-primary" id="schemaSection">
+            <div class="card-header">
+                <h2>📋 Step 1: Define Your Database Schema</h2>
+                <p>Describe your tables and columns</p>
+            </div>
+            
+            <div class="card-body">
+                <div class="input-group">
+                    <textarea 
+                        id="schemaInput" 
+                        class="query-textarea"
+                        placeholder="Example format:
+
+Table: users
+- id: INTEGER
+- username: TEXT
+- email: TEXT
+- created_at: TIMESTAMP
+
+Table: posts
+- id: INTEGER
+- user_id: INTEGER
+- title: TEXT
+- content: TEXT
+- likes: INTEGER"
+                        rows="12"
+                    ></textarea>
+                    <div class="input-footer">
+                        <span class="hint">Follow the format: Table: name, then - column: TYPE</span>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button id="saveSchemaBtn" class="btn btn-primary" onclick="saveSchema()">
+                        <span class="btn-icon">💾</span>
+                        Save Schema
+                    </button>
+                    <button id="clearSchemaBtn" class="btn btn-secondary" onclick="clearSchema()" style="display: none;">
+                        <span class="btn-icon">🗑️</span>
+                        Clear Schema
+                    </button>
+                </div>
+
+                <div id="schemaStatus" class="schema-status"></div>
+
+                <!-- Quick Schema Templates -->
+                <div class="templates-section">
+                    <h3>📚 Quick Templates:</h3>
+                    <div class="template-buttons">
+                        <button class="btn-template" onclick="loadTemplate('ecommerce')">
+                            🛒 E-commerce
+                        </button>
+                        <button class="btn-template" onclick="loadTemplate('social')">
+                            👥 Social Media
+                        </button>
+                        <button class="btn-template" onclick="loadTemplate('hr')">
+                            💼 HR System
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 2: Query Generation (Hidden until schema is saved) -->
+        <section class="card" id="querySection" style="display: none;">
+            <div class="card-header">
+                <h2>🎯 Step 2: Ask Questions About Your Data</h2>
+                <p>Describe what you want in plain English</p>
+            </div>
+            
+            <div class="card-body">
+                <div class="input-group">
+                    <textarea 
+                        id="queryInput" 
+                        class="query-textarea"
+                        placeholder="Example: Show me all users who joined in the last 30 days"
+                        rows="3"
+                    ></textarea>
+                    <div class="input-footer">
+                        <span class="hint">Press Enter to submit • Shift+Enter for new line</span>
+                    </div>
+                </div>
+
+                <button id="generateBtn" class="btn btn-primary" onclick="generateSQL()">
+                    <span class="btn-icon">✨</span>
+                    Generate SQL Query
+                </button>
+
+                <!-- Dynamic Examples (populated after schema is saved) -->
+                <div id="examplesContainer" class="examples-grid"></div>
+            </div>
+        </section>
+
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="loading-indicator">
+            <div class="spinner"></div>
+            <p>Generating SQL query with AI...</p>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsContainer" class="results-container">
+            <!-- Natural Query Display -->
+            <section class="card">
+                <div class="card-header">
+                    <h3>📝 Your Request</h3>
+                </div>
+                <div class="card-body">
+                    <div class="query-display" id="naturalQuery"></div>
+                </div>
+            </section>
+
+            <!-- SQL Output -->
+            <section class="card">
+                <div class="card-header">
+                    <h3>⚡ Generated SQL Query</h3>
+                    <button class="btn-icon-only" onclick="copySQLToClipboard()" title="Copy SQL">
+                        📋
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="sql-output">
+                        <pre id="sqlQuery"></pre>
+                    </div>
+                    <div id="validationStatus"></div>
+                </div>
+            </section>
+
+            <!-- Query Results Table -->
+            <section class="card" id="resultsSection">
+                <div class="card-header">
+                    <h3>📊 Query Results</h3>
+                    <span class="result-count">
+                        <span id="rowCount"></span> rows
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div id="dataTableContainer"></div>
+                </div>
+            </section>
+
+            <!-- Error Display -->
+            <section class="card card-error" id="errorSection">
+                <div class="card-header">
+                    <h3>⚠️ Error</h3>
+                </div>
+                <div class="card-body">
+                    <div class="error-message" id="errorMessage"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Current Schema Display -->
+        <section class="card card-schema" id="currentSchemaDisplay" style="display: none;">
+            <div class="card-header">
+                <h2>📚 Current Database Schema</h2>
+            </div>
+            <div class="card-body">
+                <div id="schemaDisplay"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>Built with Flask + Groq API + SQLite | Custom Schema Support</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
