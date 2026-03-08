@@ -1,23 +1,19 @@
 # 🤖 SQL Query Generator
 
-<<<<<<< HEAD
+
 Convert natural language questions into SQL queries using AI. Supports **SQLite, MySQL, Oracle, and PostgreSQL** with database-specific syntax generation. Define your own database schema and let the LLM generate accurate, production-ready SQL queries instantly.
 =======
 Convert natural language questions into SQL queries using AI. Define your own database schema and let the LLM generate accurate SQL queries instantly.
->>>>>>> 433536f84ea5ecac1a929fb0fe11a5cb34acad8c
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![Flask](https://img.shields.io/badge/Flask-3.0.0-green.svg)
 ![Groq](https://img.shields.io/badge/Groq-API-purple.svg)
-<<<<<<< HEAD
 ![Databases](https://img.shields.io/badge/Databases-4-orange.svg)
 =======
->>>>>>> 433536f84ea5ecac1a929fb0fe11a5cb34acad8c
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 ## 🌟 Features
 
-<<<<<<< HEAD
 - **Multi-Database Support** - SQLite, MySQL, Oracle, PostgreSQL
 - **Database-Specific Syntax** - Generates correct SQL for each database type
 - **Custom Schema Support** - Define your own database structure
@@ -56,14 +52,13 @@ Convert natural language questions into SQL queries using AI. Define your own da
 
 ## 🎬 Demo
 
-<<<<<<< HEAD
+
 ### Step 1: Select Database Type
 Choose from: **SQLite** 🗄️ | **MySQL** 🐬 | **Oracle** 🏛️ | **PostgreSQL** 🐘
 
 ### Step 2: Define Your Schema
 =======
 ### Step 1: Define Your Schema
->>>>>>> 433536f84ea5ecac1a929fb0fe11a5cb34acad8c
 ```
 Table: users
 - id: INTEGER
@@ -78,7 +73,7 @@ Table: posts
 - likes: INTEGER
 ```
 
-<<<<<<< HEAD
+
 ### Step 3: Ask Questions (Database-Specific Output!)
 
 **Input:** "Show me all users who joined in the last 30 days"
@@ -89,14 +84,12 @@ Table: posts
 **Input:** "Show me all users who joined in the last 30 days"
 
 **Output:**
->>>>>>> 433536f84ea5ecac1a929fb0fe11a5cb34acad8c
 ```sql
 SELECT * FROM users 
 WHERE created_at >= DATE('now', '-30 days')
 ORDER BY created_at DESC;
 ```
 
-<<<<<<< HEAD
 **MySQL Output:**
 ```sql
 SELECT * FROM users 
@@ -131,11 +124,10 @@ ORDER BY created_at DESC;
 ### Step 1: Clone the Repository
 
 ```bash
-<<<<<<< HEAD
+
 git clone https://github.com/biswanath123456/sql-query-generator.git
 =======
 git clone https://github.com/yourusername/sql-query-generator.git
->>>>>>> 433536f84ea5ecac1a929fb0fe11a5cb34acad8c
 cd sql-query-generator
 ```
 
@@ -197,7 +189,6 @@ GROQ_API_KEY=your_api_key_here
 
 ## 📖 Usage
 
-<<<<<<< HEAD
 ### Selecting Database Type
 
 Choose your target database before defining the schema:
@@ -210,7 +201,7 @@ Choose your target database before defining the schema:
 | **PostgreSQL** | Advanced Features, JSON | `CURRENT_DATE`, `INTERVAL`, JSONB |
 
 =======
->>>>>>> 433536f84ea5ecac1a929fb0fe11a5cb34acad8c
+
 ### Defining a Schema
 
 Your schema should follow this format:
@@ -227,7 +218,6 @@ Table: another_table
 **Supported Data Types:**
 - `INTEGER` - Whole numbers
 - `TEXT` - String/text data
-<<<<<<< HEAD
 - `REAL` / `DECIMAL` / `NUMERIC` - Decimal numbers
 - `TIMESTAMP` / `DATETIME` - Date and time
 - `DATE` - Date only
@@ -280,7 +270,6 @@ Once your schema is loaded, try these:
 | "Top 5 most liked posts" | `SELECT * FROM posts ORDER BY likes DESC LIMIT 5;` |
 | "Users with no posts" | `SELECT * FROM users WHERE id NOT IN (SELECT DISTINCT user_id FROM posts);` |
 | "Posts by user alice" | `SELECT posts.* FROM posts JOIN users ON posts.user_id = users.id WHERE users.username = 'alice';` |
->>>>>>> 433536f84ea5ecac1a929fb0fe11a5cb34acad8c
 
 ### Using Templates
 
@@ -551,7 +540,7 @@ This project teaches:
 
 ## 🚧 Roadmap
 
-<<<<<<< HEAD
+
 ### ✅ Completed Features
 
 - [x] Support for MySQL and Oracle and PostgreSQL
@@ -583,7 +572,6 @@ Future enhancements:
 - [ ] Dark mode toggle
 - [ ] SQL query explanation feature
 - [ ] Advanced filtering and sorting
->>>>>>> 433536f84ea5ecac1a929fb0fe11a5cb34acad8c
 
 ## 🤝 Contributing
 
@@ -610,39 +598,29 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [Groq](https://groq.com) - For providing free LLM API access
 - [Flask](https://flask.palletsprojects.com/) - Micro web framework
-<<<<<<< HEAD
+
 - [SQLite](https://www.sqlite.org/) - Embedded database for testing
 - [MySQL](https://www.mysql.com/) - World's most popular open-source database
 - [Oracle](https://www.oracle.com/database/) - Enterprise database system
 - [PostgreSQL](https://www.postgresql.org/) - Advanced open-source database
 =======
 - [SQLite](https://www.sqlite.org/) - Embedded database
->>>>>>> 433536f84ea5ecac1a929fb0fe11a5cb34acad8c
 - Meta's [Llama 3.3](https://ai.meta.com/llama/) - Language model
 
 ## 📞 Contact
 
 **Project Link:** [https://github.com/biswanath123456/sql-query-generator](https://github.com/biswanath123456/sql-query-generator)
 
-<<<<<<< HEAD
-**Author:** Biswanath Mahapatra
-- Email: your.email@example.com
-- Twitter: [@biswanath123456](https://twitter.com/biswanath123456)
-- LinkedIn: [Biswanath Mahapatra](https://linkedin.com/in/biswanath123456)
-=======
+
 **Author:** Your Name
 - Email: biswanath2048@gmail.com
 - LinkedIn: [Biswanath Mahapatra](https://www.linkedin.com/in/biswanath-mahapatra/))
->>>>>>> 433536f84ea5ecac1a929fb0fe11a5cb34acad8c
+
 
 ---
 
 **Built with ❤️ for learning LLM applications**
 
-<<<<<<< HEAD
 *Supports 4 major databases: SQLite • MySQL • Oracle • PostgreSQL*
 
 *Star ⭐ this repo if you find it helpful!*
-=======
-*Star ⭐ this repo if you find it helpful!*
->>>>>>> 433536f84ea5ecac1a929fb0fe11a5cb34acad8c
