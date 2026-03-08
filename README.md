@@ -1,15 +1,11 @@
 # 🤖 SQL Query Generator
 
-
 Convert natural language questions into SQL queries using AI. Supports **SQLite, MySQL, Oracle, and PostgreSQL** with database-specific syntax generation. Define your own database schema and let the LLM generate accurate, production-ready SQL queries instantly.
-=======
-Convert natural language questions into SQL queries using AI. Define your own database schema and let the LLM generate accurate SQL queries instantly.
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![Flask](https://img.shields.io/badge/Flask-3.0.0-green.svg)
 ![Groq](https://img.shields.io/badge/Groq-API-purple.svg)
 ![Databases](https://img.shields.io/badge/Databases-4-orange.svg)
-=======
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 ## 🌟 Features
@@ -23,14 +19,6 @@ Convert natural language questions into SQL queries using AI. Define your own da
 - **Query Execution** - Test queries and see results instantly (SQLite)
 - **Schema Templates** - Pre-built templates for common use cases
 - **Syntax Reference** - Database-specific syntax guides
-=======
-- **Custom Schema Support** - Define your own database structure
-- **Natural Language Processing** - Ask questions in plain English
-- **Real-time SQL Generation** - Powered by Groq's Llama 3.3 70B model
-- **Query Validation** - Automatic syntax checking against SQLite
-- **Query Execution** - Test queries and see results instantly
-- **Schema Templates** - Pre-built templates for common use cases
->>>>>>> 433536f84ea5ecac1a929fb0fe11a5cb34acad8c
 - **Syntax Highlighting** - Beautiful SQL code display
 - **Copy to Clipboard** - One-click SQL copying
 - **Responsive Design** - Works on desktop and mobile
@@ -52,13 +40,10 @@ Convert natural language questions into SQL queries using AI. Define your own da
 
 ## 🎬 Demo
 
-
 ### Step 1: Select Database Type
 Choose from: **SQLite** 🗄️ | **MySQL** 🐬 | **Oracle** 🏛️ | **PostgreSQL** 🐘
 
 ### Step 2: Define Your Schema
-=======
-### Step 1: Define Your Schema
 ```
 Table: users
 - id: INTEGER
@@ -73,17 +58,11 @@ Table: posts
 - likes: INTEGER
 ```
 
-
 ### Step 3: Ask Questions (Database-Specific Output!)
 
 **Input:** "Show me all users who joined in the last 30 days"
 
 **SQLite Output:**
-=======
-### Step 2: Ask Questions
-**Input:** "Show me all users who joined in the last 30 days"
-
-**Output:**
 ```sql
 SELECT * FROM users 
 WHERE created_at >= DATE('now', '-30 days')
@@ -111,8 +90,6 @@ WHERE created_at >= NOW() - INTERVAL '30 days'
 ORDER BY created_at DESC;
 ```
 
-=======
->>>>>>> 433536f84ea5ecac1a929fb0fe11a5cb34acad8c
 ## 🚀 Installation
 
 ### Prerequisites
@@ -124,10 +101,7 @@ ORDER BY created_at DESC;
 ### Step 1: Clone the Repository
 
 ```bash
-
 git clone https://github.com/biswanath123456/sql-query-generator.git
-=======
-git clone https://github.com/yourusername/sql-query-generator.git
 cd sql-query-generator
 ```
 
@@ -200,8 +174,6 @@ Choose your target database before defining the schema:
 | **Oracle** | Enterprise, Large Scale | `SYSDATE`, `FETCH FIRST`, Sequences |
 | **PostgreSQL** | Advanced Features, JSON | `CURRENT_DATE`, `INTERVAL`, JSONB |
 
-=======
-
 ### Defining a Schema
 
 Your schema should follow this format:
@@ -253,23 +225,6 @@ Table: another_table
 | "Last month data" | `SELECT * FROM sales WHERE sale_date >= NOW() - INTERVAL '1 month';` |
 | "Case-insensitive search" | `SELECT * FROM users WHERE username ILIKE '%john%';` |
 | "Array operations" | `SELECT * FROM posts WHERE tags && ARRAY['tech', 'ai'];` |
-=======
-- `REAL` - Decimal numbers
-- `TIMESTAMP` - Date and time
-- `DATE` - Date only
-- `BOOLEAN` - True/false values
-
-### Example Queries
-
-Once your schema is loaded, try these:
-
-| Natural Language | Generated SQL |
-|-----------------|---------------|
-| "Show all users" | `SELECT * FROM users;` |
-| "Count total posts" | `SELECT COUNT(*) FROM posts;` |
-| "Top 5 most liked posts" | `SELECT * FROM posts ORDER BY likes DESC LIMIT 5;` |
-| "Users with no posts" | `SELECT * FROM users WHERE id NOT IN (SELECT DISTINCT user_id FROM posts);` |
-| "Posts by user alice" | `SELECT posts.* FROM posts JOIN users ON posts.user_id = users.id WHERE users.username = 'alice';` |
 
 ### Using Templates
 
@@ -540,7 +495,6 @@ This project teaches:
 
 ## 🚧 Roadmap
 
-
 ### ✅ Completed Features
 
 - [x] Support for MySQL and Oracle and PostgreSQL
@@ -560,18 +514,6 @@ This project teaches:
 - [ ] Advanced filtering and sorting in results
 - [ ] Database schema import from live databases
 - [ ] SQL to Natural Language (reverse translation)
-=======
-Future enhancements:
-
-- [ ] Support for MySQL and PostgreSQL
-- [ ] Query history and favorites
-- [ ] Export results to CSV/Excel
-- [ ] Database connection from external sources
-- [ ] Multi-user authentication
-- [ ] Query optimization suggestions
-- [ ] Dark mode toggle
-- [ ] SQL query explanation feature
-- [ ] Advanced filtering and sorting
 
 ## 🤝 Contributing
 
@@ -598,24 +540,20 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [Groq](https://groq.com) - For providing free LLM API access
 - [Flask](https://flask.palletsprojects.com/) - Micro web framework
-
 - [SQLite](https://www.sqlite.org/) - Embedded database for testing
 - [MySQL](https://www.mysql.com/) - World's most popular open-source database
 - [Oracle](https://www.oracle.com/database/) - Enterprise database system
 - [PostgreSQL](https://www.postgresql.org/) - Advanced open-source database
-=======
-- [SQLite](https://www.sqlite.org/) - Embedded database
 - Meta's [Llama 3.3](https://ai.meta.com/llama/) - Language model
 
 ## 📞 Contact
 
 **Project Link:** [https://github.com/biswanath123456/sql-query-generator](https://github.com/biswanath123456/sql-query-generator)
 
-
-**Author:** Your Name
-- Email: biswanath2048@gmail.com
-- LinkedIn: [Biswanath Mahapatra](https://www.linkedin.com/in/biswanath-mahapatra/))
-
+**Author:** Biswanath Mahapatra
+- Email: your.email@example.com
+- Twitter: [@biswanath123456](https://twitter.com/biswanath123456)
+- LinkedIn: [Biswanath Mahapatra](https://linkedin.com/in/biswanath123456)
 
 ---
 
