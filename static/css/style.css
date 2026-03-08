@@ -670,3 +670,143 @@ body {
     font-size: 0.875rem;
     font-family: 'Fira Code', monospace;
 }
+
+/* ===== DATABASE SELECTOR ===== */
+.db-selector {
+    margin-bottom: var(--space-lg);
+    padding: var(--space-lg);
+    background: var(--gray-50);
+    border-radius: var(--radius-md);
+}
+
+.db-label {
+    display: block;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: var(--space-md);
+}
+
+.db-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--space-sm);
+}
+
+.db-option {
+    cursor: pointer;
+}
+
+.db-option input[type="radio"] {
+    display: none;
+}
+
+.db-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-md);
+    background: white;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.db-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.db-option input[type="radio"]:checked + .db-card {
+    border-color: var(--primary);
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.db-icon {
+    font-size: 2rem;
+    margin-bottom: var(--space-xs);
+}
+
+.db-card strong {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--gray-800);
+    margin-bottom: 2px;
+}
+
+.db-card small {
+    font-size: 0.75rem;
+    color: var(--gray-600);
+}
+
+/* ===== SYNTAX INFO BOX ===== */
+.syntax-info {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--primary);
+    margin-bottom: var(--space-md);
+}
+
+.syntax-info h4 {
+    font-size: 0.95rem;
+    color: var(--gray-800);
+    margin-bottom: var(--space-sm);
+}
+
+.syntax-info ul {
+    list-style: none;
+    padding: 0;
+}
+
+.syntax-info li {
+    padding: var(--space-xs) 0;
+    font-size: 0.875rem;
+    color: var(--gray-700);
+}
+
+.syntax-info code {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+}
+
+/* ===== DATABASE BADGES ===== */
+.db-badge {
+    background: var(--primary);
+    color: white;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.db-badge-small {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* ===== RESPONSIVE DB SELECTOR ===== */
+@media (max-width: 768px) {
+    .db-options {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .db-card {
+        padding: var(--space-sm);
+    }
+    
+    .db-icon {
+        font-size: 1.5rem;
+    }
+}

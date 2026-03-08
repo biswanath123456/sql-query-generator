@@ -1,6 +1,42 @@
 // ===== GLOBAL STATE =====
 let currentSQL = '';
 let schemaLoaded = false;
+let currentDbType = 'sqlite';
+
+// ===== DATABASE INFO =====
+const dbSyntaxExamples = {
+    sqlite: [
+        "Current Date: <code>DATE('now')</code>",
+        "Date Range: <code>DATE('now', '-7 days')</code>",
+        "Limit: <code>LIMIT N</code>",
+        "String Concat: <code>col1 || col2</code>"
+    ],
+    mysql: [
+        "Current Date: <code>CURDATE()</code>",
+        "Date Range: <code>DATE_SUB(NOW(), INTERVAL 7 DAY)</code>",
+        "Limit: <code>LIMIT N</code>",
+        "String Concat: <code>CONCAT(col1, col2)</code>"
+    ],
+    oracle: [
+        "Current Date: <code>SYSDATE</code>",
+        "Date Range: <code>SYSDATE - 7</code>",
+        "Top N: <code>FETCH FIRST N ROWS ONLY</code>",
+        "String Concat: <code>col1 || col2</code>"
+    ],
+    postgresql: [
+        "Current Date: <code>CURRENT_DATE</code>",
+        "Date Range: <code>NOW() - INTERVAL '7 days'</code>",
+        "Limit: <code>LIMIT N</code>",
+        "String Concat: <code>col1 || col2</code>"
+    ]
+};
+
+const dbNames = {
+    sqlite: 'SQLite',
+    mysql: 'MySQL',
+    oracle: 'Oracle',
+    postgresql: 'PostgreSQL'
+};
 
 // ===== SCHEMA TEMPLATES =====
 const templates = {
@@ -92,7 +128,6 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeEventListeners() {
     const queryInput = document.getElementById('queryInput');
     
-    // Enter key to submit (Shift+Enter for new line)
     if (queryInput) {
         queryInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
@@ -101,6 +136,27 @@ function initializeEventListeners() {
             }
         });
     }
+    
+    // Database type change listener
+    const dbRadios = document.querySelectorAll('input[name="dbType"]');
+    dbRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            updateSyntaxInfo(this.value);
+            currentDbType = this.value;
+        });
+    });
+}
+
+// ===== UPDATE SYNTAX INFO =====
+function updateSyntaxInfo(dbType) {
+    const syntaxInfo = document.getElementById('syntaxInfo');
+    const syntaxList = document.getElementById('syntaxList');
+    
+    syntaxInfo.querySelector('h4').textContent = `${dbNames[dbType]} Syntax Reference:`;
+    
+    syntaxList.innerHTML = dbSyntaxExamples[dbType]
+        .map(example => `<li>${example}</li>`)
+        .join('');
 }
 
 // ===== LOAD TEMPLATE =====
@@ -108,8 +164,6 @@ function loadTemplate(templateName) {
     const schemaInput = document.getElementById('schemaInput');
     schemaInput.value = templates[templateName];
     schemaInput.focus();
-    
-    // Smooth scroll to textarea
     schemaInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
@@ -120,13 +174,13 @@ async function saveSchema() {
     const statusDiv = document.getElementById('schemaStatus');
     
     const schemaText = schemaInput.value.trim();
+    const selectedDb = document.querySelector('input[name="dbType"]:checked').value;
     
     if (!schemaText) {
         showSchemaStatus('Please enter a database schema', 'error');
         return;
     }
     
-    // Show loading
     saveBtn.disabled = true;
     saveBtn.innerHTML = '<span class="btn-icon">⏳</span> Saving...';
     
@@ -136,7 +190,10 @@ async function saveSchema() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ schema: schemaText })
+            body: JSON.stringify({ 
+                schema: schemaText,
+                db_type: selectedDb
+            })
         });
         
         const data = await response.json();
@@ -145,25 +202,21 @@ async function saveSchema() {
             throw new Error(data.error);
         }
         
-        // Success
         showSchemaStatus(
-            `✓ Schema saved! Found ${data.tables.length} table(s): ${data.tables.join(', ')}`,
+            `✓ Schema saved for ${data.db_type}! Found ${data.tables.length} table(s): ${data.tables.join(', ')}`,
             'success'
         );
         
         schemaLoaded = true;
+        currentDbType = selectedDb;
         
-        // Show query section
         document.getElementById('querySection').style.display = 'block';
         document.getElementById('clearSchemaBtn').style.display = 'block';
+        document.getElementById('currentDbBadge').textContent = dbNames[selectedDb];
         
-        // Display current schema
         displayCurrentSchema(schemaText);
+        generateExampleQueries(data.tables, selectedDb);
         
-        // Generate example queries
-        generateExampleQueries(data.tables);
-        
-        // Smooth scroll to query section
         setTimeout(() => {
             document.getElementById('querySection').scrollIntoView({ 
                 behavior: 'smooth', 
@@ -188,7 +241,6 @@ async function clearSchema() {
     try {
         await fetch('/clear-schema', { method: 'POST' });
         
-        // Reset UI
         document.getElementById('schemaInput').value = '';
         document.getElementById('schemaStatus').style.display = 'none';
         document.getElementById('querySection').style.display = 'none';
@@ -198,7 +250,6 @@ async function clearSchema() {
         
         schemaLoaded = false;
         
-        // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
         
     } catch (error) {
@@ -218,7 +269,6 @@ function displayCurrentSchema(schemaText) {
     const display = document.getElementById('currentSchemaDisplay');
     const schemaDisplay = document.getElementById('schemaDisplay');
     
-    // Parse schema
     const lines = schemaText.split('\n');
     let html = '';
     let currentTable = '';
@@ -227,7 +277,6 @@ function displayCurrentSchema(schemaText) {
     lines.forEach(line => {
         line = line.trim();
         if (line.toLowerCase().startsWith('table:')) {
-            // Save previous table
             if (currentTable) {
                 html += createTableHTML(currentTable, columns);
             }
@@ -238,7 +287,6 @@ function displayCurrentSchema(schemaText) {
         }
     });
     
-    // Save last table
     if (currentTable) {
         html += createTableHTML(currentTable, columns);
     }
@@ -262,15 +310,22 @@ function createTableHTML(tableName, columns) {
 }
 
 // ===== GENERATE EXAMPLE QUERIES =====
-function generateExampleQueries(tables) {
+function generateExampleQueries(tables, dbType) {
     const container = document.getElementById('examplesContainer');
     
-    const examples = [
+    let examples = [
         `Show me all records from ${tables[0]}`,
         `Count the total number of rows in ${tables[0]}`,
         tables.length > 1 ? `Join ${tables[0]} and ${tables[1]}` : `Find records in ${tables[0]} ordered by id`,
         `Get the top 10 records from ${tables[0]}`,
     ];
+    
+    // Add database-specific examples
+    if (dbType === 'oracle') {
+        examples.push(`Get recent records from ${tables[0]} using Oracle syntax`);
+    } else if (dbType === 'mysql') {
+        examples.push(`Find records from last week in ${tables[0]} using MySQL syntax`);
+    }
     
     let html = '';
     examples.forEach(ex => {
@@ -307,10 +362,8 @@ async function generateSQL() {
         return;
     }
     
-    // Reset UI
     hideAllResults();
     
-    // Show loading
     generateBtn.disabled = true;
     generateBtn.innerHTML = '<span class="btn-icon">⏳</span> Generating...';
     loadingIndicator.classList.add('active');
@@ -346,6 +399,7 @@ function displayResults(data) {
     const resultsContainer = document.getElementById('resultsContainer');
     
     document.getElementById('naturalQuery').textContent = data.natural_query;
+    document.getElementById('resultDbType').textContent = data.database_type;
     
     currentSQL = data.sql_query;
     const highlightedSQL = highlightSQL(data.sql_query);
@@ -364,16 +418,18 @@ function displayValidationStatus(validation) {
     const errorSection = document.getElementById('errorSection');
     
     if (validation.valid) {
-        statusDiv.innerHTML = `<div class="status status-valid">✓ Query is valid</div>`;
+        if (validation.message) {
+            statusDiv.innerHTML = `<div class="status status-valid">✓ ${validation.message}</div>`;
+        } else {
+            statusDiv.innerHTML = `<div class="status status-valid">✓ Query is valid</div>`;
+        }
         
         if (validation.results && validation.results.length > 0) {
             resultsSection.style.display = 'block';
             document.getElementById('rowCount').textContent = validation.row_count;
             displayDataTable(validation.columns, validation.results);
         } else if (validation.message) {
-            resultsSection.style.display = 'block';
-            document.getElementById('dataTableContainer').innerHTML = 
-                `<p style="text-align: center; color: var(--gray-600);">${validation.message}</p>`;
+            resultsSection.style.display = 'none';
         } else {
             resultsSection.style.display = 'none';
         }
@@ -391,10 +447,12 @@ function displayValidationStatus(validation) {
 function highlightSQL(sql) {
     const keywords = [
         'SELECT', 'FROM', 'WHERE', 'JOIN', 'LEFT', 'RIGHT', 'INNER', 'OUTER',
-        'ON', 'ORDER BY', 'GROUP BY', 'HAVING', 'LIMIT', 'OFFSET',
+        'ON', 'ORDER BY', 'GROUP BY', 'HAVING', 'LIMIT', 'OFFSET', 'FETCH',
         'COUNT', 'SUM', 'AVG', 'MAX', 'MIN', 'AS', 'AND', 'OR', 'NOT',
         'IN', 'LIKE', 'BETWEEN', 'IS', 'NULL', 'DESC', 'ASC',
-        'INSERT', 'UPDATE', 'DELETE', 'CREATE', 'DROP', 'ALTER', 'DISTINCT'
+        'INSERT', 'UPDATE', 'DELETE', 'CREATE', 'DROP', 'ALTER', 'DISTINCT',
+        'FIRST', 'ROWS', 'ONLY', 'INTERVAL', 'NOW', 'SYSDATE', 'CURDATE',
+        'DATE_SUB', 'DATE_ADD', 'CONCAT'
     ];
     
     let highlighted = sql;

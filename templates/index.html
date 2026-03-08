@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SQL Query Generator - Custom Schema</title>
+    <title>SQL Query Generator - Multi-Database</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -15,11 +15,11 @@
                     <span class="icon">🤖</span>
                     SQL Query Generator
                 </h1>
-                <p class="hero-subtitle">Provide your database schema, then get SQL queries from natural language</p>
+                <p class="hero-subtitle">Multi-Database Support: SQLite, MySQL, Oracle & PostgreSQL</p>
                 <div class="hero-badges">
-                    <span class="badge">Custom Schema</span>
+                    <span class="badge">4 Databases</span>
                     <span class="badge">Groq Powered</span>
-                    <span class="badge">Real-time</span>
+                    <span class="badge">Syntax-Aware</span>
                 </div>
             </div>
         </div>
@@ -27,15 +27,69 @@
 
     <!-- Main Content -->
     <main class="container">
-        <!-- Step 1: Schema Input -->
+        <!-- Step 1: Database Selection & Schema Input -->
         <section class="card card-primary" id="schemaSection">
             <div class="card-header">
-                <h2>📋 Step 1: Define Your Database Schema</h2>
-                <p>Describe your tables and columns</p>
+                <h2>📋 Step 1: Select Database & Define Schema</h2>
+                <p>Choose your database type and describe your tables</p>
             </div>
             
             <div class="card-body">
+                <!-- Database Type Selection -->
+                <div class="db-selector">
+                    <label class="db-label">Database Type:</label>
+                    <div class="db-options">
+                        <label class="db-option">
+                            <input type="radio" name="dbType" value="sqlite" checked>
+                            <span class="db-card">
+                                <span class="db-icon">🗄️</span>
+                                <strong>SQLite</strong>
+                                <small>Lightweight, file-based</small>
+                            </span>
+                        </label>
+                        
+                        <label class="db-option">
+                            <input type="radio" name="dbType" value="mysql">
+                            <span class="db-card">
+                                <span class="db-icon">🐬</span>
+                                <strong>MySQL</strong>
+                                <small>Popular open-source</small>
+                            </span>
+                        </label>
+                        
+                        <label class="db-option">
+                            <input type="radio" name="dbType" value="oracle">
+                            <span class="db-card">
+                                <span class="db-icon">🏛️</span>
+                                <strong>Oracle</strong>
+                                <small>Enterprise-grade</small>
+                            </span>
+                        </label>
+                        
+                        <label class="db-option">
+                            <input type="radio" name="dbType" value="postgresql">
+                            <span class="db-card">
+                                <span class="db-icon">🐘</span>
+                                <strong>PostgreSQL</strong>
+                                <small>Advanced features</small>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Syntax Info Display -->
+                <div id="syntaxInfo" class="syntax-info">
+                    <h4>SQLite Syntax Reference:</h4>
+                    <ul id="syntaxList">
+                        <li>Current Date: <code>DATE('now')</code></li>
+                        <li>Limit: <code>LIMIT N</code></li>
+                        <li>String Concat: <code>||</code></li>
+                    </ul>
+                </div>
+
+                <!-- Schema Input -->
                 <div class="input-group">
+                    <label>Database Schema:</label>
                     <textarea 
                         id="schemaInput" 
                         class="query-textarea"
@@ -56,7 +110,7 @@ Table: posts
                         rows="12"
                     ></textarea>
                     <div class="input-footer">
-                        <span class="hint">Follow the format: Table: name, then - column: TYPE</span>
+                        <span class="hint">Format: Table: name, then - column: TYPE</span>
                     </div>
                 </div>
 
@@ -91,11 +145,12 @@ Table: posts
             </div>
         </section>
 
-        <!-- Step 2: Query Generation (Hidden until schema is saved) -->
+        <!-- Step 2: Query Generation -->
         <section class="card" id="querySection" style="display: none;">
             <div class="card-header">
                 <h2>🎯 Step 2: Ask Questions About Your Data</h2>
                 <p>Describe what you want in plain English</p>
+                <span class="db-badge" id="currentDbBadge">SQLite</span>
             </div>
             
             <div class="card-body">
@@ -116,7 +171,6 @@ Table: posts
                     Generate SQL Query
                 </button>
 
-                <!-- Dynamic Examples (populated after schema is saved) -->
                 <div id="examplesContainer" class="examples-grid"></div>
             </div>
         </section>
@@ -124,12 +178,11 @@ Table: posts
         <!-- Loading Indicator -->
         <div id="loadingIndicator" class="loading-indicator">
             <div class="spinner"></div>
-            <p>Generating SQL query with AI...</p>
+            <p>Generating database-specific SQL...</p>
         </div>
 
         <!-- Results Section -->
         <div id="resultsContainer" class="results-container">
-            <!-- Natural Query Display -->
             <section class="card">
                 <div class="card-header">
                     <h3>📝 Your Request</h3>
@@ -139,13 +192,15 @@ Table: posts
                 </div>
             </section>
 
-            <!-- SQL Output -->
             <section class="card">
                 <div class="card-header">
                     <h3>⚡ Generated SQL Query</h3>
-                    <button class="btn-icon-only" onclick="copySQLToClipboard()" title="Copy SQL">
-                        📋
-                    </button>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <span class="db-badge-small" id="resultDbType"></span>
+                        <button class="btn-icon-only" onclick="copySQLToClipboard()" title="Copy SQL">
+                            📋
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="sql-output">
@@ -155,7 +210,6 @@ Table: posts
                 </div>
             </section>
 
-            <!-- Query Results Table -->
             <section class="card" id="resultsSection">
                 <div class="card-header">
                     <h3>📊 Query Results</h3>
@@ -168,7 +222,6 @@ Table: posts
                 </div>
             </section>
 
-            <!-- Error Display -->
             <section class="card card-error" id="errorSection">
                 <div class="card-header">
                     <h3>⚠️ Error</h3>
@@ -190,10 +243,9 @@ Table: posts
         </section>
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>Built with Flask + Groq API + SQLite | Custom Schema Support</p>
+            <p>Multi-Database SQL Generator | SQLite • MySQL • Oracle • PostgreSQL</p>
         </div>
     </footer>
 
