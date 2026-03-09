@@ -9,7 +9,7 @@ import secrets
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = secrets.token_hex(16)
+app.secret_key = os.getenv('SECRET_KEY', secrets.token_hex(16))
 
 # Initialize Groq client
 groq_client = Groq(api_key=os.getenv('GROQ_API_KEY'))
@@ -464,4 +464,5 @@ if __name__ == '__main__':
     print("\n🚀 SQL Query Generator is running!")
     print("📍 Open http://localhost:5000 in your browser")
     print("✨ Now supports SQLite, MySQL, Oracle, and PostgreSQL!\n")
-    app.run(debug=True, port=5000)
+    port = int(os.getenv('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
